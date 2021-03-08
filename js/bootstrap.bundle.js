@@ -1635,11 +1635,7 @@ function findCommonOffsetParent(element1, element2) {
 
   // one of the nodes is inside shadowDOM, find which one
   var element1root = getRoot(element1);
-  if (element1root.host) {
-    return findCommonOffsetParent(element1root.host, element2);
-  } else {
-    return findCommonOffsetParent(element1, getRoot(element2).host);
-  }
+  return element1root.host ? findCommonOffsetParent(element1root.host, element2) : findCommonOffsetParent(element1, getRoot(element2).host);
 }
 
 /**
@@ -2595,16 +2591,8 @@ function computeStyle(data, options) {
   // its bottom.
   var left = void 0,
       top = void 0;
-  if (sideA === 'bottom') {
-    top = -offsetParentRect.height + offsets.bottom;
-  } else {
-    top = offsets.top;
-  }
-  if (sideB === 'right') {
-    left = -offsetParentRect.width + offsets.right;
-  } else {
-    left = offsets.left;
-  }
+  top = sideA === 'bottom' ? -offsetParentRect.height + offsets.bottom : offsets.top;
+  left = sideB === 'right' ? -offsetParentRect.width + offsets.right : offsets.left;
   if (gpuAcceleration && prefixedProperty) {
     styles[prefixedProperty] = 'translate3d(' + left + 'px, ' + top + 'px, 0)';
     styles[sideA] = 0;
@@ -2977,11 +2965,7 @@ function toValue(str, measurement, popperOffsets, referenceOffsets) {
   } else if (unit === 'vh' || unit === 'vw') {
     // if is a vh or vw, we calculate the size based on the viewport
     var size = void 0;
-    if (unit === 'vh') {
-      size = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    } else {
-      size = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    }
+    size = unit === 'vh' ? Math.max(document.documentElement.clientHeight, window.innerHeight || 0) : Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     return size / 100 * value;
   } else {
     // if is an explicit pixel unit, we get rid of the unit and keep the value
@@ -3087,11 +3071,7 @@ function offset(data, _ref) {
   var basePlacement = placement.split('-')[0];
 
   var offsets = void 0;
-  if (isNumeric(+offset)) {
-    offsets = [+offset, 0];
-  } else {
-    offsets = parseOffset(offset, popper, reference, basePlacement);
-  }
+  offsets = isNumeric(+offset) ? [+offset, 0] : parseOffset(offset, popper, reference, basePlacement);
 
   if (basePlacement === 'left') {
     popper.top += offsets[0];
@@ -6170,11 +6150,7 @@ var Tab = function ($$$1) {
 
       var activeElements;
 
-      if (container.nodeName === 'UL') {
-        activeElements = $$$1(container).find(Selector.ACTIVE_UL);
-      } else {
-        activeElements = $$$1(container).children(Selector.ACTIVE);
-      }
+      activeElements = container.nodeName === 'UL' ? $$$1(container).find(Selector.ACTIVE_UL) : $$$1(container).children(Selector.ACTIVE);
 
       var active = activeElements[0];
       var isTransitioning = callback && Util.supportsTransitionEnd() && active && $$$1(active).hasClass(ClassName.FADE);
